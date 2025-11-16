@@ -1,0 +1,122 @@
+.container {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: var(--text);
+}
+
+.summaryCard, .listCard {
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+}
+
+.summaryTitle, .listTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.summaryContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.percentage {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stats {
+  text-align: right;
+  flex: 1;
+  margin-left: 2rem;
+}
+
+.stats p {
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.progressBar {
+  width: 12rem;
+  height: 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transition: width 0.3s ease;
+}
+
+.statusGood {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.statusBad {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.recordList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.recordItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.recordSubject {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.recordDate {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.badgePresent {
+  background: linear-gradient(90deg, rgba(16,185,129,0.2), rgba(5,150,105,0.1));
+  color: #10b981;
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.badgeAbsent {
+  background: linear-gradient(90deg, rgba(239,68,68,0.2), rgba(220,38,38,0.1));
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.3);
+}

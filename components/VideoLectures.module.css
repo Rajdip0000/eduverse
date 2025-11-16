@@ -1,0 +1,171 @@
+.card {
+  background: rgba(15,23,36,0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.urlForm {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  color: var(--text);
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.videoList {
+  margin-top: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab:hover {
+  background: linear-gradient(90deg, rgba(139,92,246,0.08), rgba(124,58,237,0.06));
+  border-color: rgba(139,92,246,0.18);
+}
+
+.tab.active {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  color: white;
+  border-color: rgba(139,92,246,0.36);
+  box-shadow: 0 8px 24px rgba(11,17,50,0.45);
+}
+
+.playerWrapper {
+  margin-top: 12px;
+}
+
+.player {
+  width: 100%;
+  height: 360px;
+  border: 0;
+  border-radius: 10px;
+}
+
+.notesSection {
+  margin-top: 14px;
+  border-top: 1px dashed rgba(15,23,42,0.04);
+  padding-top: 12px;
+}
+
+.notesSection h4 {
+  margin: 0 0 8px 0;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-top: 8px;
+  background: transparent;
+  color: var(--text);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.noteActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btnOutline {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid rgba(11,17,33,0.06);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.summaryOutput {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+
+.notesSection h5 {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+.savedNotes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.noteItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.noteInfo {
+  flex: 1;
+}
+
+.noteSummary {
+  margin-top: 6px;
+}
+
+.deleteBtn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
