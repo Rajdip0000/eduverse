@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from '../images/logo.jpg'
-import { signUp } from '@/lib/auth-client'
+import { signUp, signIn } from '@/lib/auth-client'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -59,7 +59,7 @@ export default function SignUpPage() {
 
   const handleSocialAuth = async (provider: 'google' | 'github') => {
     setMessage({ type: 'success', text: `Redirecting to ${provider}...` })
-    await signUp.social({
+    await signIn.social({
       provider,
       callbackURL: '/students',
     })
