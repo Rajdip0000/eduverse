@@ -13,9 +13,13 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleSignOut = () => {
-    signOut()
-    router.push('/sign-in')
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      router.push('/sign-in')
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
   }
 
   const navItems = [
@@ -25,8 +29,8 @@ export default function Navbar() {
     { href: '/student/attendance', label: 'Attendance', icon: '📅' },
     { href: '/student/exams', label: 'Exams', icon: '📊' },
     { href: '/student/fees', label: 'Fees', icon: '💰' },
-    { href: '/student/quiz', label: 'Quiz', icon: '❓' },
-    { href: '/student/digilocker', label: 'EduLock', icon: '🔒' },
+    { href: '/quiz', label: 'Quiz', icon: '❓' },
+    { href: '/student/edulocker', label: 'EduLocker', icon: '🔒' },
     { href: '/student/chat', label: 'AI Mentor', icon: '🤖' },
   ]
 

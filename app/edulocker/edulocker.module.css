@@ -1,0 +1,191 @@
+.container {
+  min-height: calc(100vh - 200px);
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--muted);
+}
+
+.lockedContainer {
+  max-width: 500px;
+  margin: 3rem auto 0;
+}
+
+.card {
+  background: rgba(15, 23, 36, 0.4);
+  backdrop-filter: blur(12px);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.lockIcon {
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto 1rem;
+  background: linear-gradient(to bottom right, var(--primary), var(--accent));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  box-shadow: 0 8px 24px rgba(190, 39, 245, 0.4);
+}
+
+.passwordStrengthBar {
+  height: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.passwordStrengthFill {
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.controlsBar {
+  background: rgba(15, 23, 36, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.uploadArea {
+  position: relative;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  background: rgba(15, 23, 36, 0.2);
+}
+
+.uploadArea.dragOver {
+  border-color: var(--primary);
+  background: rgba(190, 39, 245, 0.1);
+}
+
+.uploadIcon {
+  font-size: 3.75rem;
+  margin-bottom: 1rem;
+}
+
+.progressBar {
+  height: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  transition: width 0.3s ease;
+}
+
+.documentCard {
+  background: rgba(15, 23, 36, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.3s ease;
+}
+
+.documentCard:hover {
+  border-color: rgba(190, 39, 245, 0.3);
+}
+
+.documentIcon {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(to bottom right, var(--primary), var(--accent));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 15px rgba(190, 39, 245, 0.3);
+}
+
+.securityNotice {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: rgba(190, 39, 245, 0.05);
+  border: 1px solid rgba(190, 39, 245, 0.2);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 4rem;
+  height: 4rem;
+  border: 4px solid var(--primary);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+  }
+
+  .uploadArea {
+    padding: 1.5rem;
+  }
+
+  .controlsBar {
+    flex-direction: column;
+  }
+
+  .documentCard {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .documentActions {
+    width: 100%;
+    margin-top: 1rem;
+  }
+}

@@ -1,15 +1,26 @@
-import { Resend } from 'resend'
+import {createTransport} from 'nodemailer'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+
+// Create a test account or replace with real credentials.
+const transporter = createTransport({
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: "maddison53@ethereal.email",
+    pass: "jn7jnAPss4f63QBp6D",
+  },
+});
+
 
 export async function sendVerificationEmail(email: string, otp: string) {
   try {
-    await resend.emails.send({
-      from: 'rajdipghosh24680@gmail.com',
-      to: email,
-      subject: 'Verify your email - EduVerse',
-      html: `
-        <!DOCTYPE html>
+    await transporter.sendMail({
+    from: 'rajdipghosh24680@gmail.com',
+    to: email,
+    subject: "Hello ✔",
+    text: "Hello world?", // plain‑text body
+    html: `<!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
@@ -57,9 +68,8 @@ export async function sendVerificationEmail(email: string, otp: string) {
               </tr>
             </table>
           </body>
-        </html>
-      `,
-    })
+        </html>`, // HTML body
+  })
     return { success: true }
   } catch (error) {
     console.error('Failed to send verification email:', error)
@@ -69,11 +79,12 @@ export async function sendVerificationEmail(email: string, otp: string) {
 
 export async function sendPasswordResetEmail(email: string, otp: string) {
   try {
-    await resend.emails.send({
-      from: 'EduVerse <onboarding@resend.dev>',
-      to: email,
-      subject: 'Reset your password - EduVerse',
-      html: `
+    await transporter.sendMail({
+    from: 'rajdipghosh24680@gmail.com',
+    to: email,
+    subject: "Hello ✔",
+    text: "Hello world?", // plain‑text body
+    html: `
         <!DOCTYPE html>
         <html>
           <head>
@@ -123,8 +134,8 @@ export async function sendPasswordResetEmail(email: string, otp: string) {
             </table>
           </body>
         </html>
-      `,
-    })
+      `, // HTML body
+  })
     return { success: true }
   } catch (error) {
     console.error('Failed to send password reset email:', error)
