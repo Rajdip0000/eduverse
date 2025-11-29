@@ -46,11 +46,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, code, description } = body;
+    const { name, description } = body;
 
-    if (!name || !code) {
+    if (!name) {
       return NextResponse.json(
-        { error: 'Name and code are required' },
+        { error: 'Department name is required' },
         { status: 400 }
       );
     }
@@ -58,8 +58,7 @@ export async function POST(request: NextRequest) {
     const department = await prisma.department.create({
       data: {
         name,
-        code,
-        description
+        description,
       }
     });
 

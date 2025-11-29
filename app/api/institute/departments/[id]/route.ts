@@ -18,13 +18,12 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { name, code, description } = body;
+    const { name, description } = body;
 
     const department = await prisma.department.update({
       where: { id },
       data: {
         name,
-        code,
         description
       }
     });
