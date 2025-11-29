@@ -48,9 +48,9 @@ export async function GET(req: NextRequest) {
         }
       }
       acc[courseId].total++
-      if (record.status === 'PRESENT') acc[courseId].present++
-      else if (record.status === 'LATE') acc[courseId].late++
-      else if (record.status === 'ABSENT') acc[courseId].absent++
+      if (record.status === 'present') acc[courseId].present++
+      else if (record.status === 'late') acc[courseId].late++
+      else if (record.status === 'absent') acc[courseId].absent++
       
       acc[courseId].percentage = Math.round(
         ((acc[courseId].present + acc[courseId].late * 0.5) / acc[courseId].total) * 100

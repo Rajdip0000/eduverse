@@ -21,7 +21,7 @@ export async function PUT(
     const { text, options, correctAnswer, marks } = body;
 
     // Verify teacher owns the quiz containing this question
-    const question = await prisma.question.findUnique({
+    const question = await prisma.quizQuestion.findUnique({
       where: { id },
       include: {
         quiz: {
@@ -34,7 +34,7 @@ export async function PUT(
       return NextResponse.json({ error: "Question not found or unauthorized" }, { status: 404 });
     }
 
-    const updated = await prisma.question.update({
+    const updated = await prisma.quizQuestion.update({
       where: { id },
       data: {
         text,
@@ -67,7 +67,7 @@ export async function DELETE(
     const teacherId = session.user.id;
 
     // Verify teacher owns the quiz containing this question
-    const question = await prisma.question.findUnique({
+    const question = await prisma.quizQuestion.findUnique({
       where: { id },
       include: {
         quiz: {
@@ -80,7 +80,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Question not found or unauthorized" }, { status: 404 });
     }
 
-    await prisma.question.delete({ where: { id } });
+    await prisma.quizQuestion.delete({ where: { id } });
 
     return NextResponse.json({ message: "Question deleted successfully" });
   } catch (error) {

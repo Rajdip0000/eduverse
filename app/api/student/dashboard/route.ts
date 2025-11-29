@@ -65,8 +65,8 @@ export async function GET(req: NextRequest) {
       where: { studentId: session.user.id }
     })
 
-    const presentCount = attendanceRecords.filter(r => r.status === 'PRESENT').length
-    const lateCount = attendanceRecords.filter(r => r.status === 'LATE').length
+    const presentCount = attendanceRecords.filter(r => r.status === 'present').length
+    const lateCount = attendanceRecords.filter(r => r.status === 'late').length
     const attendancePercentage = attendanceRecords.length > 0
       ? Math.round(((presentCount + lateCount * 0.5) / attendanceRecords.length) * 100)
       : 0

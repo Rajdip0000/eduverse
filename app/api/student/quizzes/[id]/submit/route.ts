@@ -16,7 +16,7 @@ export async function POST(
     }
 
     const { id: quizId } = await params;
-    const studentId = session.user.id;
+    const userId = session.user.id;
     const body = await req.json();
     const { answers } = body; // answers: { [questionId]: selectedAnswer }
 
@@ -30,7 +30,7 @@ export async function POST(
       include: {
         questions: true,
         attempts: {
-          where: { studentId },
+          where: { userId },
         },
       },
     });
@@ -48,7 +48,7 @@ export async function POST(
     const enrollment = await prisma.courseEnrollment.findFirst({
       where: {
         courseId: quiz.courseId,
-        studentId,
+        studentId: userId,
       },
     });
 
@@ -69,17 +69,17 @@ export async function POST(
     const attempt = await prisma.quizAttempt.create({
       data: {
         quizId,
-        studentId,
-        answers,
+        userId,
+        answers: JSON.stringify(answers),
         score,
-        submittedAt: new Date(),
+        passed: score >= (quiz.passingMarks || 0),
       },
       include: {
         quiz: {
           include: {
             course: {
               select: {
-                name: true,
+                title: true,
                 code: true,
               },
             },

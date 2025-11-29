@@ -14,44 +14,24 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url)
-    const courseId = searchParams.get('courseId')
+    const targetRole = searchParams.get('targetRole')
 
-    // Get notices for student's enrolled courses
+    // Get notices based on role and active status
     const where: any = {
+      isActive: true,
       OR: [
-        { publishToAll: true },
-        {
-          course: {
-            enrollments: {
-              some: { studentId: session.user.id }
-            }
-          }
-        }
+        { targetRole: null }, // Notices for all
+        { targetRole: session.user.role }
       ]
     }
 
-    if (courseId) {
-      where.courseId = courseId
+    if (targetRole) {
+      where.targetRole = targetRole
     }
 
     const notices = await prisma.notice.findMany({
       where,
-      include: {
-        course: {
-          select: {
-            id: true,
-            title: true,
-            code: true
-          }
-        },
-        author: {
-          select: {
-            name: true,
-            role: true
-          }
-        }
-      },
-      orderBy: { publishedAt: 'desc' }
+      orderBy: { createdAt: 'desc' }
     })
 
     return NextResponse.json({ notices })
