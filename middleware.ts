@@ -1,32 +1,33 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Define protected routes
-const protectedRoutes = [
-  '/students',
-  '/student',
-  '/dashboard',
-  '/profile',
-]
+// Define protected routes for each role
+const studentRoutes = ['/students', '/student']
+const teacherRoutes = ['/teacher']
+const instituteRoutes = ['/institute']
 
 // Define auth routes (redirect to dashboard if already logged in)
-const authRoutes = [
-  '/sign-in',
-  '/sign-up',
-]
+const authRoutes = ['/sign-in', '/sign-up']
+
+// Routes that don't require email verification check
+const publicRoutes = ['/', '/verify-email', '/select-role', '/forgot-password', '/reset-password', '/verify-reset']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Check if the route is protected
-  const isProtectedRoute = protectedRoutes.some(route => 
-    pathname.startsWith(route)
-  )
+  // Skip verification check for public routes and API routes
+  if (publicRoutes.includes(pathname) || pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
+  // Check if the route requires authentication
+  const isStudentRoute = studentRoutes.some(route => pathname.startsWith(route))
+  const isTeacherRoute = teacherRoutes.some(route => pathname.startsWith(route))
+  const isInstituteRoute = instituteRoutes.some(route => pathname.startsWith(route))
+  const isProtectedRoute = isStudentRoute || isTeacherRoute || isInstituteRoute
 
   // Check if the route is an auth route
-  const isAuthRoute = authRoutes.some(route => 
-    pathname.startsWith(route)
-  )
+  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
 
   // Get session cookie
   const sessionToken = request.cookies.get('better-auth.session_token')?.value
@@ -38,7 +39,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(signInUrl)
   }
 
-  // Redirect to students page if accessing auth routes with active session
+  // For protected routes with session, add header to check verification on the page
+  if (sessionToken && isProtectedRoute) {
+    const response = NextResponse.next()
+    response.headers.set('x-check-verification', 'true')
+    return response
+  }
+
+  // If authenticated and accessing auth routes, redirect to students by default
+  // The actual verification check will happen client-side
   if (isAuthRoute && sessionToken) {
     return NextResponse.redirect(new URL('/students', request.url))
   }

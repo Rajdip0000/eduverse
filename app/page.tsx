@@ -36,7 +36,7 @@ export default function Home() {
         <nav className="flex items-center gap-[18px]">
           <a href="#features" className="no-underline text-[var(--muted)] font-semibold hover:text-[var(--text)] transition-colors">Features</a>
           <a href="#pricing" className="no-underline text-[var(--muted)] font-semibold hover:text-[var(--text)] transition-colors">Pricing</a>
-          {!data&&!isPending&&<a onClick={() => router.push('/sign-in')} className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white px-3.5 py-2 rounded-[10px] font-semibold cursor-pointer hover:opacity-90 transition-opacity cursor-pointer">Login</a>}
+          {!data&&!isPending&&<a onClick={() => router.push('/select-role')} className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white px-3.5 py-2 rounded-[10px] font-semibold cursor-pointer hover:opacity-90 transition-opacity cursor-pointer">Login</a>}
           {data&&!isPending&&<a onClick={handleSignOut} className="bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white px-3.5 py-2 rounded-[10px] font-semibold cursor-pointer hover:opacity-90 transition-opacity cursor-pointer">Sign out</a>}
         </nav>
       </header>

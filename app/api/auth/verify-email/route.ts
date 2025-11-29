@@ -30,6 +30,12 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Get user info before updating
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { role: true },
+    })
+
     // Update user as verified
     await prisma.user.update({
       where: { email },
@@ -43,6 +49,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Email verified successfully',
+      role: user?.role || 'student',
     })
   } catch (error) {
     console.error('Verify email error:', error)

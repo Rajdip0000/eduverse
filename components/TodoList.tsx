@@ -1,57 +1,91 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
+import { useSession } from '@/lib/auth-client'
 
 interface Todo {
-  text: string
-  done: boolean
-  createdAt: number
+  id: string
+  title: string
+  completed: boolean
+  createdAt: string
 }
 
 export default function TodoList() {
+  const { data: session } = useSession()
   const [todos, setTodos] = useState<Todo[]>([])
   const [input, setInput] = useState('')
-
-  const TODOS_KEY = 'edu_todos_v1'
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    loadTodos()
-  }, [])
+    if (session) {
+      loadTodos()
+    }
+  }, [session])
 
-  const loadTodos = () => {
+  const loadTodos = async () => {
     try {
-      const stored = JSON.parse(localStorage.getItem(TODOS_KEY) || '[]')
-      setTodos(stored)
+      const response = await fetch('/api/student/todos')
+      if (response.ok) {
+        const data = await response.json()
+        setTodos(data.todos)
+      }
     } catch (e) {
-      setTodos([])
+      console.error('Error loading todos:', e)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const saveTodos = (newTodos: Todo[]) => {
-    localStorage.setItem(TODOS_KEY, JSON.stringify(newTodos))
-    setTodos(newTodos)
+  const saveTodo = async (title: string) => {
+    try {
+      const response = await fetch('/api/student/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title })
+      })
+      if (response.ok) {
+        await loadTodos()
+      }
+    } catch (e) {
+      console.error('Error saving todo:', e)
+    }
   }
 
-  const handleAdd = (e: FormEvent) => {
+  const handleAdd = async (e: FormEvent) => {
     e.preventDefault()
     const text = input.trim()
     if (!text) return
 
-    const newTodos = [{ text, done: false, createdAt: Date.now() }, ...todos]
-    saveTodos(newTodos)
+    await saveTodo(text)
     setInput('')
   }
 
-  const handleToggle = (idx: number) => {
-    const newTodos = [...todos]
-    newTodos[idx].done = !newTodos[idx].done
-    saveTodos(newTodos)
+  const handleToggle = async (id: string, completed: boolean) => {
+    try {
+      const response = await fetch(`/api/student/todos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: !completed })
+      })
+      if (response.ok) {
+        await loadTodos()
+      }
+    } catch (e) {
+      console.error('Error toggling todo:', e)
+    }
   }
 
-  const handleDelete = (idx: number) => {
-    const newTodos = [...todos]
-    newTodos.splice(idx, 1)
-    saveTodos(newTodos)
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await fetch(`/api/student/todos/${id}`, {
+        method: 'DELETE'
+      })
+      if (response.ok) {
+        await loadTodos()
+      }
+    } catch (e) {
+      console.error('Error deleting todo:', e)
+    }
   }
 
   return (
@@ -74,25 +108,27 @@ export default function TodoList() {
       </form>
 
       <div className="mt-2 flex flex-col gap-2">
-        {todos.length === 0 ? (
+        {loading ? (
+          <div className="text-[var(--muted)]">Loading...</div>
+        ) : todos.length === 0 ? (
           <div className="text-[var(--muted)]">No tasks yet. Add one!</div>
         ) : (
-          todos.map((todo, idx) => (
+          todos.map((todo) => (
             <div 
-              key={idx} 
+              key={todo.id} 
               className={`flex items-center gap-2.5 px-2.5 py-2.5 rounded-[10px] border border-[rgba(255,255,255,0.04)] ${
-                todo.done ? 'opacity-60 line-through' : ''
+                todo.completed ? 'opacity-60 line-through' : ''
               }`}
             >
               <input
                 type="checkbox"
-                checked={todo.done}
-                onChange={() => handleToggle(idx)}
+                checked={todo.completed}
+                onChange={() => handleToggle(todo.id, todo.completed)}
               />
-              <div className="flex-1">{todo.text}</div>
+              <div className="flex-1">{todo.title}</div>
               <button 
                 className="bg-transparent border border-[rgba(255,255,255,0.06)] text-[var(--text)] px-2 py-1.5 rounded-lg cursor-pointer"
-                onClick={() => handleDelete(idx)}
+                onClick={() => handleDelete(todo.id)}
               >
                 Delete
               </button>

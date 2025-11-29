@@ -24,14 +24,14 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/students', label: 'Dashboard', icon: '📚' },
-    { href: '/student/notices', label: 'Notices', icon: '📢' },
-    { href: '/student/assignments', label: 'Assignments', icon: '📝' },
-    { href: '/student/attendance', label: 'Attendance', icon: '📅' },
-    { href: '/student/exams', label: 'Exams', icon: '📊' },
-    { href: '/student/fees', label: 'Fees', icon: '💰' },
+    { href: '/notices', label: 'Notices', icon: '📢' },
+    { href: '/assignments', label: 'Assignments', icon: '📝' },
+    { href: '/attendance', label: 'Attendance', icon: '📅' },
+    { href: '/exams', label: 'Exams', icon: '📊' },
+    { href: '/fees', label: 'Fees', icon: '💰' },
     { href: '/quiz', label: 'Quiz', icon: '❓' },
-    { href: '/student/edulocker', label: 'EduLocker', icon: '🔒' },
-    { href: '/student/chat', label: 'AI Mentor', icon: '🤖' },
+    { href: '/edulocker', label: 'EduLocker', icon: '🔒' },
+    { href: '/chat', label: 'AI Mentor', icon: '🤖' },
   ]
 
   // Close dropdown when clicking outside

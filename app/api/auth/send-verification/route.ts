@@ -67,8 +67,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: 'Verification code sent to your email',
-      // Only return OTP in development mode
-      ...(process.env.NODE_ENV === 'development' && { otp }),
     })
   } catch (error) {
     console.error('Send verification error:', error)

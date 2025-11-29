@@ -29,7 +29,24 @@ export default function SignInPage() {
       setMessage({ type: 'error', text: res.error.message || 'Something went wrong.' })
     } else {
       setMessage({ type: 'success', text: 'Signed in successfully!' })
-      setTimeout(() => router.push('/students'), 1500)
+      
+      // Check if email is verified
+      const user = (res.data as any)?.user
+      if (user && !user.emailVerified) {
+        // Redirect to verification page if email not verified
+        setTimeout(() => router.push(`/verify-email?email=${encodeURIComponent(user.email)}&required=true`), 1500)
+        return
+      }
+      
+      // Route based on user role
+      const role = user?.role || 'student'
+      const dashboardPath = role === 'teacher' 
+        ? '/teacher/dashboard' 
+        : role === 'institute' 
+        ? '/institute/dashboard' 
+        : '/students'
+      
+      setTimeout(() => router.push(dashboardPath), 1500)
     }
   }
 

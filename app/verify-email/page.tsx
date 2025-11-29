@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import logo from '../images/logo.jpg'
+import { signOut } from '@/lib/auth-client'
 
 function VerifyEmailForm() {
   const router = useRouter()
@@ -13,13 +14,23 @@ function VerifyEmailForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isResending, setIsResending] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [isRequired, setIsRequired] = useState(false)
 
   useEffect(() => {
     const emailFromUrl = searchParams.get('email')
+    const requiredParam = searchParams.get('required')
     if (emailFromUrl) {
       setEmail(emailFromUrl)
     }
+    if (requiredParam === 'true') {
+      setIsRequired(true)
+    }
   }, [searchParams])
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push('/')
+  }
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return
@@ -81,8 +92,20 @@ function VerifyEmailForm() {
         throw new Error(data.error || 'Failed to verify email')
       }
 
-      setMessage({ type: 'success', text: 'Email verified! Redirecting...' })
-      setTimeout(() => router.push('/sign-in'), 2000)
+      setMessage({ type: 'success', text: 'Email verified! Redirecting to dashboard...' })
+      
+      // Determine dashboard path based on role
+      const role = data.role || 'student'
+      const dashboardPath = role === 'teacher' 
+        ? '/teacher/dashboard' 
+        : role === 'institute' 
+        ? '/institute/dashboard' 
+        : '/students'
+      
+      // Reload the page to refresh the session, then redirect
+      setTimeout(() => {
+        window.location.href = dashboardPath
+      }, 1500)
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'Failed to verify email' })
     } finally {
@@ -151,6 +174,11 @@ function VerifyEmailForm() {
         <div className="animate-[fadeIn_0.4s_ease]">
           <h2 className="text-2xl font-bold text-[var(--text)] m-0 mb-2 text-center">Verify Email</h2>
           <p className="text-sm text-[var(--muted)] m-0 mb-8 text-center">
+            {isRequired && (
+              <span className="block mb-2 text-orange-400 font-semibold">
+                ⚠️ Email verification is required to access the platform
+              </span>
+            )}
             Enter the 6-digit code sent to<br />
             <span className="text-[var(--text)] font-semibold">{email}</span>
           </p>
@@ -187,18 +215,31 @@ function VerifyEmailForm() {
             </button>
           </form>
 
-          <p className="text-center mt-6 text-sm text-[var(--muted)]">
-            <button onClick={() => router.push('/sign-up')} className="bg-none border-none text-[var(--primary)] font-semibold cursor-pointer p-0 transition-all duration-200 hover:text-[var(--accent)] hover:underline">
-              ← Back to sign up
-            </button>
-          </p>
+          {!isRequired && (
+            <p className="text-center mt-6 text-sm text-[var(--muted)]">
+              <button onClick={() => router.push('/sign-up')} className="bg-none border-none text-[var(--primary)] font-semibold cursor-pointer p-0 transition-all duration-200 hover:text-[var(--accent)] hover:underline">
+                ← Back to sign up
+              </button>
+            </p>
+          )}
+
+          {isRequired && (
+            <p className="text-center mt-6 text-sm text-[var(--muted)]">
+              Wrong email?{' '}
+              <button onClick={handleSignOut} className="bg-none border-none text-[var(--primary)] font-semibold cursor-pointer p-0 transition-all duration-200 hover:text-[var(--accent)] hover:underline">
+                Sign out
+              </button>
+            </p>
+          )}
         </div>
       </div>
 
-      {/* Back to Home */}
-      <button onClick={() => router.push('/')} className="fixed top-8 left-8 py-3 px-6 rounded-[12px] border border-[rgba(255,255,255,0.1)] bg-[rgba(15,23,36,0.6)] backdrop-blur-[20px] text-[var(--text)] font-medium cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.08)] hover:border-[var(--primary)] hover:-translate-x-1">
-        ← Back to Home
-      </button>
+      {/* Back to Home - Only show if not required */}
+      {!isRequired && (
+        <button onClick={() => router.push('/')} className="fixed top-8 left-8 py-3 px-6 rounded-[12px] border border-[rgba(255,255,255,0.1)] bg-[rgba(15,23,36,0.6)] backdrop-blur-[20px] text-[var(--text)] font-medium cursor-pointer transition-all duration-300 hover:bg-[rgba(255,255,255,0.08)] hover:border-[var(--primary)] hover:-translate-x-1">
+          ← Back to Home
+        </button>
+      )}
     </div>
   )
 }

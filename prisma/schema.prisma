@@ -16,13 +16,34 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
-  role          String    @default("student")
+  role          String    @default("student") // student, teacher, institute
   phoneNumber   String?
   dateOfBirth   DateTime?
+  organization  String?   // For institute users
+  subject       String?   // For teacher users
+  designation   String?   // For teacher/institute users
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  
+  // Relations
+  teacherCourses     Course[]           @relation("TeacherCourses")
+  enrolledCourses    CourseEnrollment[]
+  assignments        Assignment[]       @relation("TeacherAssignments")
+  submissions        Submission[]
+  attendanceRecords  Attendance[]
+  examsTaken         ExamSubmission[]
+  feePayments        FeePayment[]
+  sentMessages       Message[]          @relation("SentMessages")
+  receivedMessages   Message[]          @relation("ReceivedMessages")
+  documents          Document[]
+  videoProgress      VideoProgress[]
+  quizAttempts       QuizAttempt[]
+  quizzes            Quiz[]             @relation("TeacherQuizzes")
+  todos              Todo[]
+  departmentHead     Department?        @relation("DepartmentHead")
+  teacherDepartments TeacherDepartment[]
 
   @@map("user")
 }
@@ -70,4 +91,324 @@ model Verification {
 
   @@unique([identifier, value])
   @@map("verification")
+}
+
+model Department {
+  id          String              @id @default(uuid())
+  name        String
+  description String?
+  headId      String?             @unique
+  head        User?               @relation("DepartmentHead", fields: [headId], references: [id])
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  courses     Course[]
+  teachers    TeacherDepartment[]
+  
+  @@map("department")
+}
+
+model TeacherDepartment {
+  id           String     @id @default(uuid())
+  teacherId    String
+  teacher      User       @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  
+  @@unique([teacherId, departmentId])
+  @@map("teacher_department")
+}
+
+model Course {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  code        String             @unique
+  teacherId   String
+  teacher     User               @relation("TeacherCourses", fields: [teacherId], references: [id], onDelete: Cascade)
+  departmentId String?
+  department  Department?        @relation(fields: [departmentId], references: [id])
+  credits     Int                @default(3)
+  semester    String?
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  enrollments CourseEnrollment[]
+  assignments Assignment[]
+  exams       Exam[]
+  videos      Video[]
+  attendances Attendance[]
+  quizzes     Quiz[]
+  
+  @@map("course")
+}
+
+model CourseEnrollment {
+  id         String   @id @default(uuid())
+  studentId  String
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseId   String
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrolledAt DateTime @default(now())
+  status     String   @default("active") // active, completed, dropped
+  
+  @@unique([studentId, courseId])
+  @@map("course_enrollment")
+}
+
+model Assignment {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  courseId    String
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacherId   String
+  teacher     User         @relation("TeacherAssignments", fields: [teacherId], references: [id])
+  dueDate     DateTime
+  maxMarks    Int          @default(100)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  submissions Submission[]
+  
+  @@map("assignment")
+}
+
+model Submission {
+  id           String    @id @default(uuid())
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId    String
+  student      User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  content      String
+  fileUrl      String?
+  submittedAt  DateTime  @default(now())
+  grade        Int?
+  feedback     String?
+  gradedAt     DateTime?
+  
+  @@unique([assignmentId, studentId])
+  @@map("submission")
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  status    String   // present, absent, late
+  remarks   String?
+  
+  @@unique([courseId, studentId, date])
+  @@map("attendance")
+}
+
+model Exam {
+  id          String           @id @default(uuid())
+  title       String
+  description String?
+  courseId    String
+  course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  date        DateTime
+  duration    Int              // in minutes
+  maxMarks    Int              @default(100)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  submissions ExamSubmission[]
+  
+  @@map("exam")
+}
+
+model ExamSubmission {
+  id         String   @id @default(uuid())
+  examId     String
+  exam       Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  answers    String   // JSON string
+  marks      Int?
+  submittedAt DateTime @default(now())
+  
+  @@unique([examId, studentId])
+  @@map("exam_submission")
+}
+
+model FeeStructure {
+  id          String       @id @default(uuid())
+  title       String
+  amount      Float
+  dueDate     DateTime
+  semester    String
+  academicYear String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  payments    FeePayment[]
+  
+  @@map("fee_structure")
+}
+
+model FeePayment {
+  id          String       @id @default(uuid())
+  feeId       String
+  fee         FeeStructure @relation(fields: [feeId], references: [id], onDelete: Cascade)
+  studentId   String
+  student     User         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  amount      Float
+  paidAt      DateTime     @default(now())
+  paymentMode String       // online, cash, cheque
+  transactionId String?
+  status      String       @default("completed") // completed, pending, failed
+  
+  @@map("fee_payment")
+}
+
+model Notice {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  priority    String   @default("medium") // high, medium, low
+  targetRole  String?  // student, teacher, institute, null for all
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("notice")
+}
+
+model Announcement {
+  id         String   @id @default(uuid())
+  title      String
+  content    String
+  priority   String   @default("medium") // high, medium, low
+  targetRole String?  // student, teacher, null for all
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@map("announcement")
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  @@map("message")
+}
+
+model Document {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  fileName    String
+  fileUrl     String
+  fileType    String
+  fileSize    Int
+  category    String?  // academic, personal, certificate, etc
+  uploadedAt  DateTime @default(now())
+  
+  @@map("document")
+}
+
+model Video {
+  id          String          @id @default(uuid())
+  title       String
+  description String?
+  url         String
+  thumbnail   String?
+  duration    Int             // in seconds
+  courseId    String?
+  course      Course?         @relation(fields: [courseId], references: [id])
+  category    String?
+  isPublic    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  progress    VideoProgress[]
+  
+  @@map("video")
+}
+
+model VideoProgress {
+  id            String   @id @default(uuid())
+  videoId       String
+  video         Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  watchedSeconds Int     @default(0)
+  completed     Boolean  @default(false)
+  lastWatchedAt DateTime @default(now())
+  
+  @@unique([videoId, userId])
+  @@map("video_progress")
+}
+
+model Quiz {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  courseId    String?
+  course      Course?       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  teacherId   String?
+  teacher     User?         @relation("TeacherQuizzes", fields: [teacherId], references: [id], onDelete: Cascade)
+  duration    Int           // in minutes
+  passingMarks Int
+  totalMarks  Int
+  startTime   DateTime?
+  endTime     DateTime?
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  questions   QuizQuestion[]
+  attempts    QuizAttempt[]
+  
+  @@map("quiz")
+}
+
+model QuizQuestion {
+  id            String   @id @default(uuid())
+  quizId        String
+  quiz          Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  question      String
+  options       String   // JSON array of options
+  correctAnswer String
+  marks         Int      @default(1)
+  explanation   String?
+  
+  @@map("quiz_question")
+}
+
+model QuizAttempt {
+  id          String   @id @default(uuid())
+  quizId      String
+  quiz        Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers     String   // JSON object
+  score       Int
+  passed      Boolean
+  attemptedAt DateTime @default(now())
+  
+  @@map("quiz_attempt")
+}
+
+model Todo {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  completed   Boolean  @default(false)
+  priority    String   @default("medium") // high, medium, low
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("todo")
 }
