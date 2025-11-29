@@ -48,7 +48,7 @@ export async function PUT(
     const { id } = await params;
     const studentId = session.user.id;
     const body = await req.json();
-    const { name, expiryDate } = body;
+    const { title, category } = body;
 
     const document = await prisma.document.findFirst({
       where: { id, userId: studentId },
@@ -61,8 +61,8 @@ export async function PUT(
     const updated = await prisma.document.update({
       where: { id },
       data: {
-        name,
-        expiryDate: expiryDate ? new Date(expiryDate) : undefined,
+        ...(title && { title }),
+        ...(category && { category }),
       },
     });
 

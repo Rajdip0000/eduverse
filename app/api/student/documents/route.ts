@@ -37,21 +37,21 @@ export async function POST(req: NextRequest) {
 
     const studentId = session.user.id;
     const body = await req.json();
-    const { name, type, fileUrl, size, expiryDate } = body;
+    const { title, fileName, fileType, fileUrl, fileSize, category } = body;
 
-    if (!name || !type || !fileUrl) {
+    if (!title || !fileName || !fileType || !fileUrl) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const document = await prisma.document.create({
       data: {
         userId: studentId,
-        name,
-        type,
+        title,
+        fileName,
+        fileType,
         fileUrl,
-        size: size || 0,
-        isVerified: false,
-        expiryDate: expiryDate ? new Date(expiryDate) : undefined,
+        fileSize: fileSize || 0,
+        category,
       },
     });
 

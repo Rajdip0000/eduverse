@@ -5,12 +5,12 @@ import styles from './digilocker.module.css';
 
 interface Document {
   id: string;
-  name: string;
-  type: string;
+  title: string;
+  fileName: string;
+  fileType: string;
   fileUrl: string;
-  size?: number;
-  isVerified: boolean;
-  expiryDate?: string;
+  fileSize: number;
+  category?: string;
   uploadedAt: string;
 }
 
@@ -31,11 +31,12 @@ export default function DigiLockerPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingDoc, setEditingDoc] = useState<Document | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'Other',
+    title: '',
+    fileName: '',
+    fileType: 'Other',
     fileUrl: '',
-    size: '',
-    expiryDate: ''
+    fileSize: '',
+    category: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [filterType, setFilterType] = useState<string>('all');
@@ -49,7 +50,7 @@ export default function DigiLockerPage() {
       const res = await fetch('/api/student/documents');
       if (res.ok) {
         const data = await res.json();
-        setDocuments(data.documents);
+        setDocuments(data);
       }
     } catch (error) {
       console.error('Error fetching documents:', error);
@@ -61,8 +62,8 @@ export default function DigiLockerPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.fileUrl) {
-      alert('Please fill in document name and file URL');
+    if (!formData.title || !formData.fileName || !formData.fileUrl) {
+      alert('Please fill in all required fields');
       return;
     }
 
@@ -70,18 +71,13 @@ export default function DigiLockerPage() {
 
     try {
       const payload: any = {
-        name: formData.name,
-        type: formData.type,
+        title: formData.title,
+        fileName: formData.fileName,
+        fileType: formData.fileType,
         fileUrl: formData.fileUrl,
+        fileSize: formData.fileSize ? parseInt(formData.fileSize) : 0,
+        category: formData.category || undefined,
       };
-
-      if (formData.size) {
-        payload.size = parseInt(formData.size);
-      }
-
-      if (formData.expiryDate) {
-        payload.expiryDate = new Date(formData.expiryDate).toISOString();
-      }
 
       const url = editingDoc 
         ? `/api/student/documents/${editingDoc.id}`
@@ -100,11 +96,12 @@ export default function DigiLockerPage() {
         setShowModal(false);
         setEditingDoc(null);
         setFormData({
-          name: '',
-          type: 'Other',
+          title: '',
+          fileName: '',
+          fileType: 'Other',
           fileUrl: '',
-          size: '',
-          expiryDate: ''
+          fileSize: '',
+          category: ''
         });
       } else {
         const err = await res.json();
@@ -121,11 +118,12 @@ export default function DigiLockerPage() {
   const handleEdit = (doc: Document) => {
     setEditingDoc(doc);
     setFormData({
-      name: doc.name,
-      type: doc.type,
+      title: doc.title,
+      fileName: doc.fileName,
+      fileType: doc.fileType,
       fileUrl: doc.fileUrl,
-      size: doc.size?.toString() || '',
-      expiryDate: doc.expiryDate ? doc.expiryDate.split('T')[0] : ''
+      fileSize: doc.fileSize?.toString() || '',
+      category: doc.category || ''
     });
     setShowModal(true);
   };
@@ -155,11 +153,12 @@ export default function DigiLockerPage() {
     setShowModal(false);
     setEditingDoc(null);
     setFormData({
-      name: '',
-      type: 'Other',
+      title: '',
+      fileName: '',
+      fileType: 'Other',
       fileUrl: '',
-      size: '',
-      expiryDate: ''
+      fileSize: '',
+      category: ''
     });
   };
 
@@ -170,14 +169,9 @@ export default function DigiLockerPage() {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
-  const isExpired = (expiryDate?: string) => {
-    if (!expiryDate) return false;
-    return new Date(expiryDate) < new Date();
-  };
-
   const filteredDocuments = filterType === 'all' 
     ? documents 
-    : documents.filter(doc => doc.type === filterType);
+    : documents.filter(doc => doc.fileType === filterType);
 
   if (loading) {
     return (
@@ -211,13 +205,13 @@ export default function DigiLockerPage() {
         >
           All ({documents.length})
         </button>
-        {documentTypes.filter(type => documents.some(doc => doc.type === type)).map(type => (
+        {documentTypes.filter(type => documents.some(doc => doc.fileType === type)).map(type => (
           <button
             key={type}
             onClick={() => setFilterType(type)}
             className={`${styles.filterBtn} ${filterType === type ? styles.active : ''}`}
           >
-            {type} ({documents.filter(doc => doc.type === type).length})
+            {type} ({documents.filter(doc => doc.fileType === type).length})
           </button>
         ))}
       </div>
@@ -235,36 +229,29 @@ export default function DigiLockerPage() {
           {filteredDocuments.map(doc => (
             <div key={doc.id} className={styles.card}>
               <div className={styles.cardHeader}>
-                <span className={styles.typeBadge}>{doc.type}</span>
+                <span className={styles.typeBadge}>{doc.fileType}</span>
                 <div className={styles.statusBadges}>
-                  {doc.isVerified && (
-                    <span className={styles.verifiedBadge}>✓ Verified</span>
-                  )}
-                  {isExpired(doc.expiryDate) && (
-                    <span className={styles.expiredBadge}>Expired</span>
+                  {doc.category && (
+                    <span className={styles.verifiedBadge}>{doc.category}</span>
                   )}
                 </div>
               </div>
 
-              <h3 className={styles.docName}>{doc.name}</h3>
+              <h3 className={styles.docName}>{doc.title}</h3>
 
               <div className={styles.docInfo}>
                 <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>File:</span>
+                  <span>{doc.fileName}</span>
+                </div>
+                <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Size:</span>
-                  <span>{formatFileSize(doc.size)}</span>
+                  <span>{formatFileSize(doc.fileSize)}</span>
                 </div>
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>Uploaded:</span>
                   <span>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
                 </div>
-                {doc.expiryDate && (
-                  <div className={styles.infoItem}>
-                    <span className={styles.infoLabel}>Expires:</span>
-                    <span className={isExpired(doc.expiryDate) ? styles.expired : ''}>
-                      {new Date(doc.expiryDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
               </div>
 
               <div className={styles.actions}>
@@ -304,21 +291,32 @@ export default function DigiLockerPage() {
 
             <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.formGroup}>
-                <label>Document Name *</label>
+                <label>Document Title *</label>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., My Aadhaar Card"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  placeholder="e.g., Aadhaar Card"
                   required
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Document Type *</label>
+                <label>File Name *</label>
+                <input
+                  type="text"
+                  value={formData.fileName}
+                  onChange={(e) => setFormData({ ...formData, fileName: e.target.value })}
+                  placeholder="e.g., aadhaar.pdf"
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>File Type *</label>
                 <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  value={formData.fileType}
+                  onChange={(e) => setFormData({ ...formData, fileType: e.target.value })}
                   required
                 >
                   {documentTypes.map(type => (
@@ -343,21 +341,23 @@ export default function DigiLockerPage() {
               </div>
 
               <div className={styles.formGroup}>
-                <label>File Size (bytes)</label>
+                <label>File Size (bytes) *</label>
                 <input
                   type="number"
-                  value={formData.size}
-                  onChange={(e) => setFormData({ ...formData, size: e.target.value })}
-                  placeholder="Optional"
+                  value={formData.fileSize}
+                  onChange={(e) => setFormData({ ...formData, fileSize: e.target.value })}
+                  placeholder="Enter file size"
+                  required
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label>Expiry Date</label>
+                <label>Category</label>
                 <input
-                  type="date"
-                  value={formData.expiryDate}
-                  onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                  type="text"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  placeholder="e.g., Government ID, Academic"
                 />
               </div>
 
