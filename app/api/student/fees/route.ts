@@ -13,53 +13,24 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Get fee structures for student's enrolled courses
+    // Get all fee structures (apply to all students)
     const feeRecords = await prisma.feeStructure.findMany({
-      where: {
-        OR: [
-          { applicableToAll: true },
-          {
-            course: {
-              enrollments: {
-                some: { studentId: session.user.id }
-              }
-            }
-          }
-        ]
-      },
-      include: {
-        course: {
-          select: {
-            id: true,
-            title: true,
-            code: true
-          }
-        }
-      }
+      orderBy: { dueDate: 'asc' }
     })
 
     // Get payment history
     const payments = await prisma.feePayment.findMany({
       where: { studentId: session.user.id },
       include: {
-        feeStructure: {
-          include: {
-            course: {
-              select: {
-                title: true,
-                code: true
-              }
-            }
-          }
-        }
+        fee: true
       },
-      orderBy: { paymentDate: 'desc' }
+      orderBy: { paidAt: 'desc' }
     })
 
     // Calculate totals
     const totalDue = feeRecords.reduce((sum, fee) => sum + fee.amount, 0)
     const totalPaid = payments
-      .filter(p => p.status === 'PAID')
+      .filter(p => p.status === 'completed')
       .reduce((sum, p) => sum + p.amount, 0)
 
     return NextResponse.json({
