@@ -42,6 +42,7 @@ model User {
   quizAttempts       QuizAttempt[]
   quizzes            Quiz[]             @relation("TeacherQuizzes")
   todos              Todo[]
+  announcements      Announcement[]     @relation("UserAnnouncements")
   departmentHead     Department?        @relation("DepartmentHead")
   teacherDepartments TeacherDepartment[]
 
@@ -283,6 +284,8 @@ model Announcement {
   priority   String   @default("medium") // high, medium, low
   targetRole String?  // student, teacher, null for all
   isActive   Boolean  @default(true)
+  authorId   String?
+  author     User?    @relation("UserAnnouncements", fields: [authorId], references: [id], onDelete: SetNull)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   
