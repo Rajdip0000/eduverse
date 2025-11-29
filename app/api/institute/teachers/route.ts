@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
             department: true
           }
         },
-        coursesTeaching: {
+        teacherCourses: {
           include: {
             _count: {
               select: {
