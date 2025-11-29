@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma';
 // DELETE - Delete a question
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string; questionId: string } }
+  { params }: { params: Promise<{ id: string; questionId: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -15,7 +15,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { id: quizId, questionId } = params;
+    const { id: quizId, questionId } = await params;
 
     // Verify teacher owns the quiz
     const quiz = await prisma.quiz.findFirst({

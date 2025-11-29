@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 // GET - Fetch single course details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const course = await prisma.course.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         department: true,
         enrollments: {
@@ -61,7 +63,7 @@ export async function GET(
 // PUT - Update course
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -70,8 +72,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const course = await prisma.course.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!course) {
@@ -83,10 +87,10 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, description, credits, semester, isActive, departmentId } = body
+    const { title, code, description, credits, departmentId } = body
 
     const updatedCourse = await prisma.course.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         description,
@@ -110,7 +114,7 @@ export async function PUT(
 // DELETE - Delete course
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -119,8 +123,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const course = await prisma.course.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!course) {
@@ -132,7 +138,7 @@ export async function DELETE(
     }
 
     await prisma.course.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ message: 'Course deleted successfully' })

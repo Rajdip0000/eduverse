@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 // PUT - Grade a submission
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -14,8 +14,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const submission = await prisma.submission.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         assignment: true,
       },
@@ -40,7 +42,7 @@ export async function PUT(
     }
 
     const gradedSubmission = await prisma.submission.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         grade,
         feedback,

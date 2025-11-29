@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 // GET - Fetch assignment with submissions
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -14,8 +14,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const assignment = await prisma.assignment.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         course: true,
         submissions: {
@@ -52,7 +54,7 @@ export async function GET(
 // PUT - Update assignment
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -61,8 +63,10 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const assignment = await prisma.assignment.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!assignment) {
@@ -74,10 +78,10 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, description, dueDate, maxMarks } = body
+    const { title, description, dueDate, maxMarks, courseId } = body
 
     const updatedAssignment = await prisma.assignment.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         description,
@@ -99,7 +103,7 @@ export async function PUT(
 // DELETE - Delete assignment
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: request.headers })
@@ -108,8 +112,10 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const assignment = await prisma.assignment.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!assignment) {
@@ -121,7 +127,7 @@ export async function DELETE(
     }
 
     await prisma.assignment.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ message: 'Assignment deleted successfully' })

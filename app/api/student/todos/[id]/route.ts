@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getCurrentUser()
@@ -16,11 +16,12 @@ export async function PUT(
       )
     }
 
+    const { id } = await params
     const body = await request.json()
     const { completed, title, description, priority, dueDate } = body
 
     const todo = await prisma.todo.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!todo || todo.userId !== user.id) {
@@ -31,7 +32,7 @@ export async function PUT(
     }
 
     const updatedTodo = await prisma.todo.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(completed !== undefined && { completed }),
         ...(title && { title }),
@@ -53,7 +54,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getCurrentUser()
@@ -65,8 +66,10 @@ export async function DELETE(
       )
     }
 
+    const { id } = await params
+
     const todo = await prisma.todo.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!todo || todo.userId !== user.id) {
@@ -77,7 +80,7 @@ export async function DELETE(
     }
 
     await prisma.todo.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Todo deleted successfully' })
