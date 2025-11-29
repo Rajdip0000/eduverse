@@ -16,7 +16,7 @@ export async function GET(
     }
 
     const { id } = await params;
-    const studentId = session.user.id;
+    const userId = session.user.id;
 
     const quiz = await prisma.quiz.findUnique({
       where: { id },
@@ -24,7 +24,7 @@ export async function GET(
         course: {
           select: {
             id: true,
-            name: true,
+            title: true,
             code: true,
           },
         },
@@ -45,7 +45,7 @@ export async function GET(
           orderBy: { createdAt: 'asc' },
         },
         attempts: {
-          where: { studentId },
+          where: { userId },
         },
       },
     });
@@ -58,7 +58,7 @@ export async function GET(
     const enrollment = await prisma.courseEnrollment.findFirst({
       where: {
         courseId: quiz.courseId,
-        studentId,
+        studentId: userId,
       },
     });
 

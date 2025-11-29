@@ -16,19 +16,19 @@ export async function GET(
     }
 
     const { id: quizId } = await params;
-    const studentId = session.user.id;
+    const userId = session.user.id;
 
     const attempt = await prisma.quizAttempt.findFirst({
       where: {
         quizId,
-        studentId,
+        userId,
       },
       include: {
         quiz: {
           include: {
             course: {
               select: {
-                name: true,
+                title: true,
                 code: true,
               },
             },

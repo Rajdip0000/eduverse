@@ -12,11 +12,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const studentId = session.user.id;
+    const userId = session.user.id;
 
     // Get student's enrolled courses
     const enrollments = await prisma.courseEnrollment.findMany({
-      where: { studentId },
+      where: { studentId: userId },
       select: { courseId: true },
     });
 
