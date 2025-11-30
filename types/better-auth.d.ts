@@ -1,11 +1,12 @@
-import type { Session as BetterAuthSession } from 'better-auth/types'
+// Type declarations for Better Auth custom fields
+export interface CustomUser {
+  role: string
+  phoneNumber?: string | null
+  dateOfBirth?: Date | null
+}
 
-declare module 'better-auth/types' {
-  interface User {
-    role: string
-    phoneNumber?: string | null
-    dateOfBirth?: Date | null
-  }
+declare module 'better-auth' {
+  export interface User extends CustomUser {}
 }
 
 declare module 'better-auth/client' {
