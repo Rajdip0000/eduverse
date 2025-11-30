@@ -12,7 +12,7 @@
   "dependencies": {
     "@google/genai": "^1.29.1",
     "@google/generative-ai": "^0.24.1",
-    "@prisma/client": "^7.0.1",
+    "@prisma/client": "6.19.0",
     "@prisma/extension-accelerate": "^2.0.2",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
