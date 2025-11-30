@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSessionWithRole } from "@/lib/auth-utils";
 import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 
