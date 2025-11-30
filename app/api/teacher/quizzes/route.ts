@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 // GET /api/teacher/quizzes - List all quizzes created by teacher
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
 // POST /api/teacher/quizzes - Create a new quiz
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -96,3 +96,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to create quiz" }, { status: 500 });
   }
 }
+

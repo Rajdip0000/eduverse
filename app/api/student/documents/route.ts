@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSessionWithRole } from "@/lib/auth-utils";
 import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 
 // GET /api/student/documents - Get all documents for student
 export async function GET(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'student') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
 // POST /api/student/documents - Upload a new document
 export async function POST(req: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'student') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -61,3 +61,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to upload document" }, { status: 500 });
   }
 }
+

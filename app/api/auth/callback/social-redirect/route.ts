@@ -40,3 +40,5 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.redirect(new URL(dashboardPath, request.url))
 }
+
+

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSessionWithRole } from "@/lib/auth-utils";
 import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 
@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'student') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -33,13 +33,13 @@ export async function GET(
   }
 }
 
-// PUT /api/student/documents/[id] - Update document
+// PUT /api/student/documents/[id] - Update document metadata
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'student') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -79,7 +79,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
+    const session = await getSessionWithRole(await headers());
     
     if (!session?.user || session.user.role !== 'student') {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

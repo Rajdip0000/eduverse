@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { getSessionWithRole } from '@/lib/auth-utils'
+import { headers } from 'next/headers'
 
 // GET - Fetch assignment with submissions
 export async function GET(
