@@ -10,4 +10,4 @@ export const authClient = createAuthClient({
 export const { signIn, signUp, signOut } = authClient
 
 // Export the session atom for use with Jotai
-export const sessionAtom = authClient.$sessionSignal
+export const sessionAtom = authClient.session
