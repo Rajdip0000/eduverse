@@ -35,7 +35,7 @@ export async function GET(
             questions: {
               select: {
                 id: true,
-                text: true,
+                question: true,
                 options: true,
                 correctAnswer: true,
                 marks: true,
@@ -57,7 +57,7 @@ export async function GET(
       
       return {
         questionId: question.id,
-        text: question.text,
+        text: question.question,
         options: question.options,
         correctAnswer: question.correctAnswer,
         studentAnswer,

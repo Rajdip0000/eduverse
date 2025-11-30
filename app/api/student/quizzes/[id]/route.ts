@@ -37,7 +37,7 @@ export async function GET(
         questions: {
           select: {
             id: true,
-            text: true,
+            question: true,
             options: true,
             marks: true,
             // Don't send correctAnswer to students

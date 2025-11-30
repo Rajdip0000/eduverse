@@ -18,10 +18,10 @@ export async function PUT(
     const { id } = await params;
     const teacherId = session.user.id;
     const body = await req.json();
-    const { text, options, correctAnswer, marks } = body;
+    const { question, options, correctAnswer, marks } = body;
 
     // Verify teacher owns the quiz containing this question
-    const question = await prisma.quizQuestion.findUnique({
+    const existingQuestion = await prisma.quizQuestion.findUnique({
       where: { id },
       include: {
         quiz: {
@@ -30,14 +30,14 @@ export async function PUT(
       },
     });
 
-    if (!question || question.quiz.teacherId !== teacherId) {
+    if (!existingQuestion || existingQuestion.quiz.teacherId !== teacherId) {
       return NextResponse.json({ error: "Question not found or unauthorized" }, { status: 404 });
     }
 
     const updated = await prisma.quizQuestion.update({
       where: { id },
       data: {
-        text,
+        question,
         options,
         correctAnswer,
         marks,
