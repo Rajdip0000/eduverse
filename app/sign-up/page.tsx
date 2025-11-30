@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import logo from '../images/logo.jpg'
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 type Role = 'student' | 'teacher' | 'institute'
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [role, setRole] = useState<Role>('student')
@@ -288,5 +288,13 @@ export default function SignUpPage() {
         ← Change Role
       </button>
     </div>
+  )
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <SignUpForm />
+    </Suspense>
   )
 }
