@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { auth } from '@/lib/auth'
+import { getSessionWithRole } from '@/lib/auth-utils'
+import { headers } from 'next/headers'
 
 // GET - Fetch teacher dashboard statistics
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth.api.getSession({ headers: request.headers })
+    const session = await getSessionWithRole(await headers())
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
