@@ -6,6 +6,8 @@ import Image from 'next/image'
 import logo from '../images/logo.jpg'
 import { signIn } from '@/lib/auth-client'
 
+export const dynamic = 'force-dynamic'
+
 export default function SignInPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')

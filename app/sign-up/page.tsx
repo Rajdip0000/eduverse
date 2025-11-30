@@ -6,6 +6,8 @@ import Image from 'next/image'
 import logo from '../images/logo.jpg'
 import { signUp, signIn } from '@/lib/auth-client'
 
+export const dynamic = 'force-dynamic'
+
 type Role = 'student' | 'teacher' | 'institute'
 
 export default function SignUpPage() {

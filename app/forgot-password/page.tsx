@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from '../images/logo.jpg'
 
+export const dynamic = 'force-dynamic'
+
 export default function ForgotPasswordPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')

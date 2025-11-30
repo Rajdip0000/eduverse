@@ -1,9 +1,11 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import logo from '../images/logo.jpg'
+
+export const dynamic = 'force-dynamic'
 
 function ResetPasswordForm() {
   const router = useRouter()
