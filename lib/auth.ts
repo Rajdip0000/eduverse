@@ -18,10 +18,12 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirectURI: `${process.env.BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/google`,
     },
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      redirectURI: `${process.env.BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/github`,
     },
   },
   session: {
@@ -68,4 +70,21 @@ export const auth = betterAuth({
     process.env.BETTER_AUTH_URL || 'http://localhost:3000',
     'https://eduverse-gamma-kohl.vercel.app',
   ],
+  hooks: {
+    after: [
+      {
+        matcher: (context) => context.path === '/sign-in/social' || context.path === '/sign-up/social',
+        handler: async (context) => {
+          // Set default role for social signups
+          if (context.user && !context.user.role) {
+            await prisma.user.update({
+              where: { id: context.user.id },
+              data: { role: 'student' },
+            })
+          }
+          return context
+        },
+      },
+    ],
+  },
 })

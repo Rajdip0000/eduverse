@@ -93,12 +93,7 @@ function SignUpForm() {
 
   const handleSocialAuth = async (provider: 'google' | 'github') => {
     setMessage({ type: 'success', text: `Redirecting to ${provider}...` })
-    // Store role in localStorage for post-OAuth callback
-    localStorage.setItem('signup-role', role)
-    await signIn.social({
-      provider,
-      callbackURL: '/api/auth/callback/social-redirect',
-    })
+    await signIn.social({ provider })
   }
 
   const config = roleConfig[role]
