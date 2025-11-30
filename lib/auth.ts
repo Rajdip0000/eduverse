@@ -1,5 +1,6 @@
-import { betterAuth } from 'better-auth'
-import { prismaAdapter } from 'better-auth/adapters/prisma'
+// Use require to work around TypeScript module resolution issues
+const { betterAuth } = require('better-auth') as any
+const { prismaAdapter } = require('better-auth/adapters/prisma') as any
 import prisma from '@/lib/prisma'
 
 export const auth = betterAuth({
