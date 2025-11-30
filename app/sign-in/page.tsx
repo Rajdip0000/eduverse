@@ -56,7 +56,7 @@ export default function SignInPage() {
     setMessage({ type: 'success', text: `Redirecting to ${provider}...` })
     await signIn.social({
       provider,
-      callbackURL: '/students',
+      callbackURL: '/api/auth/callback/social-redirect',
     })
   }
 
