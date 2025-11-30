@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { auth } from '@/lib/auth'
 
 // Define protected routes for each role
 const studentRoutes = ['/students', '/student']
@@ -34,9 +35,28 @@ export async function middleware(request: NextRequest) {
                       request.cookies.get('better-auth.session-token')?.value ||
                       request.cookies.get('session_token')?.value
 
+  // Try to get session from Better Auth API if no cookie found
+  let hasValidSession = !!sessionToken
+  if (!sessionToken && isProtectedRoute) {
+    try {
+      const session = await auth.api.getSession({ 
+        headers: request.headers 
+      })
+      hasValidSession = !!session
+      console.log('Better Auth API session check:', { 
+        hasSession: !!session,
+        userId: session?.user?.id 
+      })
+    } catch (error) {
+      console.log('Better Auth API session check failed:', error)
+      hasValidSession = false
+    }
+  }
+
   console.log('Middleware Debug:', {
     pathname,
     sessionToken: !!sessionToken,
+    hasValidSession,
     isProtectedRoute,
     isStudentRoute,
     isTeacherRoute,
@@ -45,15 +65,15 @@ export async function middleware(request: NextRequest) {
   })
 
   // Redirect to sign-in if accessing protected route without session
-  if (isProtectedRoute && !sessionToken) {
-    console.log('Redirecting to sign-in: no session token')
+  if (isProtectedRoute && !hasValidSession) {
+    console.log('Redirecting to sign-in: no valid session')
     const signInUrl = new URL('/sign-in', request.url)
     signInUrl.searchParams.set('redirect', pathname)
     return NextResponse.redirect(signInUrl)
   }
 
   // For protected routes with session, add header to check verification on the page
-  if (sessionToken && isProtectedRoute) {
+  if (hasValidSession && isProtectedRoute) {
     const response = NextResponse.next()
     response.headers.set('x-check-verification', 'true')
     return response
@@ -61,7 +81,7 @@ export async function middleware(request: NextRequest) {
 
   // If authenticated and accessing auth routes, redirect to students by default
   // The actual verification check will happen client-side
-  if (isAuthRoute && sessionToken) {
+  if (isAuthRoute && hasValidSession) {
     return NextResponse.redirect(new URL('/students', request.url))
   }
 
