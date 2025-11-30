@@ -1,4 +1,4 @@
-declare module 'better-auth/react' {
+declare module 'better-auth/client' {
   interface Session {
     user: {
       id: string
