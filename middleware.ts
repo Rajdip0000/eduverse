@@ -29,11 +29,24 @@ export async function middleware(request: NextRequest) {
   // Check if the route is an auth route
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
 
-  // Get session cookie
-  const sessionToken = request.cookies.get('better-auth.session_token')?.value
+  // Get session cookie (try multiple possible cookie names)
+  const sessionToken = request.cookies.get('better-auth.session_token')?.value || 
+                      request.cookies.get('better-auth.session-token')?.value ||
+                      request.cookies.get('session_token')?.value
+
+  console.log('Middleware Debug:', {
+    pathname,
+    sessionToken: !!sessionToken,
+    isProtectedRoute,
+    isStudentRoute,
+    isTeacherRoute,
+    isInstituteRoute,
+    cookies: request.cookies.getAll().map(c => c.name)
+  })
 
   // Redirect to sign-in if accessing protected route without session
   if (isProtectedRoute && !sessionToken) {
+    console.log('Redirecting to sign-in: no session token')
     const signInUrl = new URL('/sign-in', request.url)
     signInUrl.searchParams.set('redirect', pathname)
     return NextResponse.redirect(signInUrl)

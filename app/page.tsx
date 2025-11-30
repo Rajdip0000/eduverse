@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from './images/logo.jpg'
 import { signOut, useSession } from '@/lib/auth-client'
+import SessionDebug from '@/components/SessionDebug'
 
 export default function Home() {
   const router = useRouter()
@@ -23,6 +24,9 @@ export default function Home() {
 
   return (
     <div className="w-screen pt-6 mx-auto px-6 min-h-screen flex flex-col">
+      {/* Debug info */}
+      <SessionDebug />
+      
       <header className="flex items-center justify-between mb-7 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-[10px] flex items-center justify-center shadow-[0_10px_30px_rgba(2,6,23,0.6)] overflow-hidden">
