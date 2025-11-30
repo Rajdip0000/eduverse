@@ -1,7 +1,7 @@
 import { createAuthClient } from 'better-auth/react'
 
-// Extend Better Auth types for client-side
-declare module 'better-auth' {
+// Extend Better Auth React types
+declare module 'better-auth/react' {
   interface Session {
     user: {
       id: string
