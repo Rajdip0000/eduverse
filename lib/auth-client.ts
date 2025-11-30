@@ -1,11 +1,7 @@
 // @/lib/auth-client.ts
 'use client'
-// @ts-ignore - better-auth has type export issues
-import { createAuthClient } from 'better-auth/react'
 
-export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'
-})
+import { createAuthClient } from 'better-auth/react'
 
 // Extend the default types
 declare module 'better-auth/react' {
@@ -25,4 +21,6 @@ declare module 'better-auth/react' {
   }
 }
 
-export const { signIn, signUp, signOut, useSession } = authClient
+export const { signIn, signUp, signOut, useSession } = createAuthClient({
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000',
+})
