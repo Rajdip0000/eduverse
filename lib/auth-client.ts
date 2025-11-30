@@ -1,5 +1,5 @@
+// @/lib/auth-client.ts
 'use client'
-
 // @ts-ignore - better-auth has type export issues
 import { createAuthClient } from 'better-auth/react'
 
@@ -9,5 +9,5 @@ export const authClient = createAuthClient({
 
 export const { signIn, signUp, signOut, useSession } = authClient
 
-// Export the session atom for use with Jotai
-// export const sessionAtom = authClient.session
+// Export the session atom - it's available on the client instance
+export const sessionAtom = authClient.$Infer.sessionAtom
