@@ -1,13 +1,33 @@
-import type { Session as BetterAuthSession, User as BetterAuthUser } from 'better-auth/types'
-
 declare module 'better-auth/types' {
-  interface Session extends BetterAuthSession {
-    user: User
+  interface Session {
+    user: {
+      id: string
+      email: string
+      name: string
+      image?: string | null
+      role: string
+      phoneNumber?: string | null
+      dateOfBirth?: Date | null
+      emailVerified: boolean
+      createdAt: Date
+      updatedAt: Date
+    }
   }
-  
-  interface User extends BetterAuthUser {
-    role: string
-    phoneNumber?: string | null
-    dateOfBirth?: Date | null
+}
+
+declare module 'better-auth/react' {
+  interface Session {
+    user: {
+      id: string
+      email: string
+      name: string
+      image?: string | null
+      role: string
+      phoneNumber?: string | null
+      dateOfBirth?: Date | null
+      emailVerified: boolean
+      createdAt: Date
+      updatedAt: Date
+    }
   }
 }
