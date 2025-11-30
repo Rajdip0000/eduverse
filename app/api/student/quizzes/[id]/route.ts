@@ -42,7 +42,6 @@ export async function GET(
             marks: true,
             // Don't send correctAnswer to students
           },
-          orderBy: { createdAt: 'asc' },
         },
         attempts: {
           where: { userId },
