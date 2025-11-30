@@ -66,21 +66,4 @@ export const auth = betterAuth({
     process.env.BETTER_AUTH_URL || 'http://localhost:3000',
     'https://eduverse-gamma-kohl.vercel.app',
   ],
-  hooks: {
-    after: [
-      {
-        matcher: (context) => context.path === '/sign-in/social' || context.path === '/sign-up/social',
-        handler: async (context) => {
-          // Set default role for social signups
-          if (context.user && !context.user.role) {
-            await prisma.user.update({
-              where: { id: context.user.id },
-              data: { role: 'student' },
-            })
-          }
-          return context
-        },
-      },
-    ],
-  },
 })
