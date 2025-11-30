@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
           },
         },
         attempts: {
-          where: { userId: studentId },
+          where: { userId },
           orderBy: { attemptedAt: 'desc' },
           take: 1,
         },

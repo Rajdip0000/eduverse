@@ -87,7 +87,7 @@ export async function PUT(
     }
 
     const body = await request.json()
-    const { title, code, description, credits, departmentId } = body
+    const { title, code, description, credits, departmentId, semester, isActive } = body
 
     const updatedCourse = await prisma.course.update({
       where: { id },
