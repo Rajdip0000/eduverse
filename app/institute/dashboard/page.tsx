@@ -1,14 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import VerificationChecker from '@/components/VerificationChecker'
 
 export default function InstituteDashboard() {
-  const [{ data: session, isPending }] = useAtom(sessionAtom)
+  const { data: session, isPending } = useSession()
   const router = useRouter()
   const [stats] = useState({
     totalStudents: 1245,

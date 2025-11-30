@@ -8,6 +8,3 @@ export const authClient = createAuthClient({
 })
 
 export const { signIn, signUp, signOut, useSession } = authClient
-
-// Export the session atom - it's available on the client instance
-export const sessionAtom = authClient.$Infer.sessionAtom

@@ -1,7 +1,6 @@
 'use client'
 
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './departments.module.css'
@@ -18,7 +17,7 @@ interface Department {
 }
 
 export default function DepartmentsPage() {
-  const [{ data: session, isPending }] = useAtom(sessionAtom)
+  const { data: session, isPending } = useSession()
   const router = useRouter()
   const [departments, setDepartments] = useState<Department[]>([])
   const [loading, setLoading] = useState(true)

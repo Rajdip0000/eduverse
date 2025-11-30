@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 
 export default function VerificationChecker() {
-  const [{ data: session, isPending }] = useAtom(sessionAtom)
+  const { data: session, isPending } = useSession()
   const router = useRouter()
   const pathname = usePathname()
   const hasRedirected = useRef(false)

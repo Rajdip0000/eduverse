@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect, FormEvent } from 'react'
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 
 interface Todo {
   id: string
@@ -12,7 +11,7 @@ interface Todo {
 }
 
 export default function TodoList() {
-  const [{ data: session }] = useAtom(sessionAtom)
+  const { data: session } = useSession()
   const [todos, setTodos] = useState<Todo[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(true)

@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 import Navbar from '@/components/Navbar'
 import VerificationChecker from '@/components/VerificationChecker'
 
@@ -29,7 +28,7 @@ interface Assignment {
 }
 
 export default function StudentAssignmentsPage() {
-  const [{ data: session, isPending }] = useAtom(sessionAtom)
+  const { data: session, isPending } = useSession()
   const router = useRouter()
   const [assignments, setAssignments] = useState<Assignment[]>([])
   const [isLoading, setIsLoading] = useState(true)

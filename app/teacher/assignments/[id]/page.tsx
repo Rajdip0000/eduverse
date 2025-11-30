@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { useAtom } from 'jotai'
-import { sessionAtom } from '@/lib/auth-client'
+import { useSession } from '@/lib/auth-client'
 import Navbar from '@/components/Navbar'
 import VerificationChecker from '@/components/VerificationChecker'
 
@@ -40,7 +39,7 @@ interface Assignment {
 export default function AssignmentDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const [{ data: session, isPending }] = useAtom(sessionAtom)
+  const { data: session, isPending } = useSession()
   const [assignment, setAssignment] = useState<Assignment | null>(null)
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
   const [gradeForm, setGradeForm] = useState({ grade: 0, feedback: '' })
