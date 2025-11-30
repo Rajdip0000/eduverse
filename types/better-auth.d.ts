@@ -1,4 +1,6 @@
-declare module 'better-auth' {
+import type { Session as BetterAuthSession } from 'better-auth/types'
+
+declare module 'better-auth/types' {
   interface User {
     role: string
     phoneNumber?: string | null
