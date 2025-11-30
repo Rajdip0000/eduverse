@@ -54,9 +54,9 @@ export default function SignInPage() {
 
   const handleSocialAuth = async (provider: 'google' | 'github') => {
     setMessage({ type: 'success', text: `Redirecting to ${provider}...` })
+    // Let Better Auth handle the redirect automatically after OAuth
     await signIn.social({ 
-      provider,
-      callbackURL: '/students'
+      provider
     })
   }
 

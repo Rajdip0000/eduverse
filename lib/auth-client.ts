@@ -1,10 +1,11 @@
 'use client'
 
+import * as React from 'react'
 // @ts-ignore - better-auth has type export issues
 import { createAuthClient } from 'better-auth/client'
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || process.env.BETTER_AUTH_URL || 'http://localhost:3000'
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'
 })
 
 export const { signIn, signUp, signOut } = authClient
@@ -29,5 +30,3 @@ export function useSession() {
 
   return { data: session, isPending, error }
 }
-
-import * as React from 'react'
