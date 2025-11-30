@@ -2,24 +2,6 @@ import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import prisma from '@/lib/prisma'
 
-// Extend Better Auth types
-declare module 'better-auth' {
-  interface Session {
-    user: {
-      id: string
-      email: string
-      name: string
-      image?: string | null
-      role: string
-      phoneNumber?: string | null
-      dateOfBirth?: Date | null
-      emailVerified: boolean
-      createdAt: Date
-      updatedAt: Date
-    }
-  }
-}
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
