@@ -56,10 +56,6 @@ export const auth = betterAuth({
       enabled: false,
     },
     useSecureCookies: process.env.NODE_ENV === 'production',
-    generateId: () => {
-      // Generate a unique ID for users, sessions, etc.
-      return crypto.randomUUID()
-    },
   },
   rateLimit: {
     enabled: true,
