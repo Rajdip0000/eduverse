@@ -9,5 +9,5 @@ export const authClient = createAuthClient({
 
 export const { signIn, signUp, signOut } = authClient
 
-// Export the useSession hook from Better Auth client
-export const useSession = authClient.useSession
+// Export the session atom for use with Jotai
+export const sessionAtom = authClient.$sessionSignal

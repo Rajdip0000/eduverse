@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { useSession } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom } from '@/lib/auth-client'
 import Navbar from '@/components/Navbar'
 import VerificationChecker from '@/components/VerificationChecker'
 
@@ -58,7 +59,7 @@ type Tab = 'overview' | 'students' | 'assignments' | 'attendance'
 export default function CourseDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { data: session, isPending } = useSession()
+  const [{ data: session, isPending }] = useAtom(sessionAtom)
   const [course, setCourse] = useState<Course | null>(null)
   const [studentsWithStats, setStudentsWithStats] = useState<Student[]>([])
   const [activeTab, setActiveTab] = useState<Tab>('overview')

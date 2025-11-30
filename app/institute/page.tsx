@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from '@/lib/auth-client';
+import { useAtom } from 'jotai';
+import { sessionAtom } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import styles from './page.module.css';
@@ -29,7 +30,7 @@ interface DashboardData {
 }
 
 export default function InstitutePage() {
-  const { data: session, isPending } = useSession();
+  const [{ data: session, isPending }] = useAtom(sessionAtom);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom } from '@/lib/auth-client'
 import Navbar from '@/components/Navbar'
 import VerificationChecker from '@/components/VerificationChecker'
 
@@ -23,7 +24,7 @@ interface Course {
 
 export default function TeacherCoursesPage() {
   const router = useRouter()
-  const { data: session, isPending } = useSession()
+  const [{ data: session, isPending }] = useAtom(sessionAtom)
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)

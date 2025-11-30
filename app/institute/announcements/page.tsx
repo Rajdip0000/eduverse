@@ -1,6 +1,7 @@
 'use client'
 
-import { useSession } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './announcements.module.css'
@@ -17,7 +18,7 @@ interface Announcement {
 }
 
 export default function AnnouncementsPage() {
-  const { data: session, isPending } = useSession()
+  const [{ data: session, isPending }] = useAtom(sessionAtom)
   const router = useRouter()
   const [announcements, setAnnouncements] = useState<Announcement[]>([])
   const [loading, setLoading] = useState(true)

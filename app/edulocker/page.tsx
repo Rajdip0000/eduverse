@@ -2,10 +2,11 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom } from '@/lib/auth-client'
 
 export default function EduLockerPage() {
-  const { data: session, isPending } = useSession()
+  const [{ data: session, isPending }] = useAtom(sessionAtom)
   const router = useRouter()
 
   useEffect(() => {

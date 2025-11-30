@@ -3,12 +3,13 @@
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import logo from './images/logo.jpg'
-import { useSession,signOut } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom, signOut } from '@/lib/auth-client'
 
 export default function Home() {
   const router = useRouter()
 
-  const {data,isPending} = useSession()
+  const [{ data, isPending }] = useAtom(sessionAtom)
 
   const handleSignOut = async () => {
     try {

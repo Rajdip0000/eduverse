@@ -1,6 +1,7 @@
 'use client'
 
-import { useSession } from '@/lib/auth-client'
+import { useAtom } from 'jotai'
+import { sessionAtom } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import styles from './teachers.module.css'
@@ -27,7 +28,7 @@ interface Teacher {
 }
 
 export default function TeachersPage() {
-  const { data: session, isPending } = useSession()
+  const [{ data: session, isPending }] = useAtom(sessionAtom)
   const router = useRouter()
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [loading, setLoading] = useState(true)
