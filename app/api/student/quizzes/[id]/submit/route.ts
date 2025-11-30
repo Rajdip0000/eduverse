@@ -44,16 +44,18 @@ export async function POST(
       return NextResponse.json({ error: "Already attempted this quiz" }, { status: 400 });
     }
 
-    // Verify enrollment
-    const enrollment = await prisma.courseEnrollment.findFirst({
-      where: {
-        courseId: quiz.courseId,
-        studentId: userId,
-      },
-    });
+    // Verify enrollment (if quiz has a course)
+    if (quiz.courseId) {
+      const enrollment = await prisma.courseEnrollment.findFirst({
+        where: {
+          courseId: quiz.courseId,
+          studentId: userId,
+        },
+      });
 
-    if (!enrollment) {
-      return NextResponse.json({ error: "Not enrolled in this course" }, { status: 403 });
+      if (!enrollment) {
+        return NextResponse.json({ error: "Not enrolled in this course" }, { status: 403 });
+      }
     }
 
     // Calculate score

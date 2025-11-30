@@ -53,16 +53,18 @@ export async function GET(
       return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
     }
 
-    // Verify student is enrolled in the course
-    const enrollment = await prisma.courseEnrollment.findFirst({
-      where: {
-        courseId: quiz.courseId,
-        studentId: userId,
-      },
-    });
+    // Verify student is enrolled in the course (if quiz has a course)
+    if (quiz.courseId) {
+      const enrollment = await prisma.courseEnrollment.findFirst({
+        where: {
+          courseId: quiz.courseId,
+          studentId: userId,
+        },
+      });
 
-    if (!enrollment) {
-      return NextResponse.json({ error: "Not enrolled in this course" }, { status: 403 });
+      if (!enrollment) {
+        return NextResponse.json({ error: "Not enrolled in this course" }, { status: 403 });
+      }
     }
 
     // Check if student already attempted
