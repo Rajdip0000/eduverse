@@ -1,4 +1,4 @@
-import { auth } from './auth'
+import { getSessionWithRole } from './auth-utils'
 import { headers } from 'next/headers'
 
 /**
@@ -6,9 +6,7 @@ import { headers } from 'next/headers'
  */
 export async function getSession() {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    })
+    const session = await getSessionWithRole(await headers())
     return session
   } catch (error) {
     return null
@@ -48,7 +46,7 @@ export async function requireAuth() {
 export async function hasRole(role: string) {
   const user = await getCurrentUser()
   if (!user) return false
-  return (user as any).role === role
+  return user.role === role
 }
 
 /**
@@ -59,7 +57,7 @@ export async function requireRole(role: string) {
   if (!user) {
     throw new Error('Authentication required')
   }
-  if ((user as any).role !== role) {
+  if (user.role !== role) {
     throw new Error('Insufficient permissions')
   }
   return user
