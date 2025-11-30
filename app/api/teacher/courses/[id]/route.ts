@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: request.headers })
+    const session = await getSessionWithRole(await headers())
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -67,7 +67,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: request.headers })
+    const session = await getSessionWithRole(await headers())
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -118,7 +118,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth.api.getSession({ headers: request.headers })
+    const session = await getSessionWithRole(await headers())
     
     if (!session?.user || session.user.role !== 'teacher') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
